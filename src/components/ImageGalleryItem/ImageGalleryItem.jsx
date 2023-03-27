@@ -1,7 +1,12 @@
-export const ImageGalleryItem = () => {
+import css from '../../css/Styles.module.css'
+
+export const ImageGalleryItem = ({ images }) => {
   return (
-    <li class="gallery-item">
-      <img src="" alt="" />
-    </li>
-  );
+    <>
+    {images&&images.map((image) => <li key={image.id} className={css.ImageGalleryItem}>
+        <img className={css.ImageGalleryItem_image} src={image.webformatURL
+} alt={image.tags} />
+      </li>)}</>
+    )
 };
+ 

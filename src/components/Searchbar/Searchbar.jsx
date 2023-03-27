@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import css from '../../css/Styles.module.css'
 
 export class Searchbar extends Component {
   state = {
@@ -6,30 +7,30 @@ export class Searchbar extends Component {
   };
 
   handleInputChange = evt => {
-    const { name, value } = evt.target;
+    const {  value } = evt.target;
     this.setState({
-      [name]: value,
-    });
+      query: value,
+    })
   };
 
   handleSubmit = evt => {
     evt.preventDefault();
-    this.props.handleSearch(this.state.query);
+    this.props.onHandleSearch(this.state.query);
   };
 
   render() {
     return (
-      <header className="searchbar">
-        <form className="form" onSubmit={this.handleSubmit}>
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
+      <header className={css.Searchbar}>
+        <form className={css.SearchForm} onSubmit={this.handleSubmit}>
+          <button type="submit" className={css.SearchForm_button}>
+            <span className={css.SearchForm_button__label}>Search</span>
           </button>
 
           <input
             onChange={this.handleInputChange}
             value={this.state.query}
-            name="query"
-            className="input"
+            name='query'
+            className={css.SearchForm_input}
             type="text"
             autoComplete="off"
             autoFocus
