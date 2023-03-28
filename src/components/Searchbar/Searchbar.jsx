@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import css from '../../css/Styles.module.css'
+import css from '../../css/Styles.module.css';
 
 export class Searchbar extends Component {
   state = {
@@ -7,17 +7,20 @@ export class Searchbar extends Component {
   };
 
   handleInputChange = evt => {
-    const {  value } = evt.target;
+    const { value } = evt.target;
     this.setState({
       query: value,
-    })
+    });
   };
 
   handleSubmit = evt => {
     evt.preventDefault();
     this.props.onHandleSearch(this.state.query);
+    this.reset();
   };
-
+  reset = () => {
+    this.setState({ query: '' });
+  };
   render() {
     return (
       <header className={css.Searchbar}>
@@ -29,7 +32,7 @@ export class Searchbar extends Component {
           <input
             onChange={this.handleInputChange}
             value={this.state.query}
-            name='query'
+            name="query"
             className={css.SearchForm_input}
             type="text"
             autoComplete="off"

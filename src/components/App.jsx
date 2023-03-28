@@ -2,39 +2,85 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { Component } from 'react';
 import { getImages } from '../services/getImage';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem'
-import {Loader} from './Loader/Loader'
+import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
+import { Modal } from './Modal/Modal';
+import { Button } from './Button/Button';
+import { Loader } from './Loader/Loader';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 
-
-
- 
 export class App extends Component {
   state = {
     query: '',
-    images: null,
-    isLoading:false,
+    page: 1,
+    images: [],
+    isLoading: false,
+    isLoadButton: false,
   };
 
   handleSearch = searchQuery => {
-    this.setState({query:searchQuery});
+    if (this.state.query === searchQuery) {
+      return;
+    }
+    this.setState({
+      query: searchQuery,
+      page: 1,
+      images: [],
+      isLoadButton: false,
+    });
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query)
-      this.setState({ isLoading:true})
-      getImages(this.state.query)
-      .then(response => response.json())
-      .then((images) => this.setState({ images: images.hits }))
-      .finally(()=>{this.setState({ isLoading:false})})
+  componentDidUpdate(_, prevState) {
+    if (this.state.query.trim() === '') {
+      return Report.info('Oops', 'You need to input search value');
+    }
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
+      this.setState({ isLoading: true });
+      setTimeout(() => {
+        getImages(this.state.query, this.state.page)
+          .then(response => response.json())
+          .then(data => {
+            if (data.total === 0) {
+              return Report.info('Not found', 'Input valid search value');
+            }
+            if (data.total <= 12) {
+              this.setState({ images: data.hits });
+            }
+            if (data.total > 12) {
+              this.setState(prevState => ({
+                isLoadButton: true,
+                images: [...prevState.images, ...data.hits],
+              }));
+            }
+          })
+          .catch(error => {
+            Report.failure('Error', `${error}`);
+          })
+          .finally(() => {
+            this.setState({ isLoading: false });
+          });
+      }, 1000);
+    }
+  }
+
+  handleClickButton = e => {
+    e.preventDefault();
+    this.setState(({ page }) => ({ page: page + 1 }));
   };
 
   render() {
-    const {images,isLoading}  = this.state
+    const { images, isLoading, isLoadButton } = this.state;
     return (
       <>
         <Searchbar onHandleSearch={this.handleSearch} />
-        {isLoading && <Loader/>}
-        <ImageGallery><ImageGalleryItem images={images} /></ImageGallery>
+        {isLoading && <Loader />}
+        <ImageGallery>
+          <ImageGalleryItem images={images} />
+        </ImageGallery>
+        {isLoadButton && <Button onClick={this.handleClickButton} />}
+        <Modal largeImage={images.largeImageURL} />
       </>
     );
   }
