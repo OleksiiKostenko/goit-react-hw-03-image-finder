@@ -15,6 +15,10 @@ export class App extends Component {
     images: [],
     isLoading: false,
     isLoadButton: false,
+    isShowModal: false,
+    largeImage: '',
+    tags:'',
+    
   };
 
   handleSearch = searchQuery => {
@@ -69,18 +73,26 @@ export class App extends Component {
     e.preventDefault();
     this.setState(({ page }) => ({ page: page + 1 }));
   };
+  toggleModal = (image,tags) => {
+    this.setState(({ isShowModal }) => ({
+      isShowModal: !isShowModal,
+      largeImage: image,
+      tags: tags
+    }))
+  }
 
   render() {
-    const { images, isLoading, isLoadButton } = this.state;
+    const { images, isLoading, isLoadButton, isShowModal, largeImage, tags } = this.state;
     return (
       <>
         <Searchbar onHandleSearch={this.handleSearch} />
         {isLoading && <Loader />}
         <ImageGallery>
-          <ImageGalleryItem images={images} />
+          <ImageGalleryItem toggleModal={this.toggleModal} images={images} />
         </ImageGallery>
         {isLoadButton && <Button onClick={this.handleClickButton} />}
-        <Modal largeImage={images.largeImageURL} />
+        {isShowModal && <Modal largeImage={largeImage} tags={tags} toggleModal={this.toggleModal}>
+        </Modal>}
       </>
     );
   }

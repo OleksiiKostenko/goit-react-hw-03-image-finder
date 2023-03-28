@@ -9,9 +9,12 @@ export class Button extends Component {
 
   render() {
     return (
-      <button tupe="button" onClick={this.onLoadMore} className={css.Button}>
+      <div className={css.Wrapp_btn}>
+        <button type="button" onClick={this.onLoadMore} className={css.Button}>
         Load More
       </button>
+      </div>
+      
     );
   }
 }

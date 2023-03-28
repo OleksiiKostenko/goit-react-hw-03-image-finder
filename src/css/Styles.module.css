@@ -53,7 +53,7 @@ img {
   padding-top: 12px;
   padding-bottom: 12px;
   color: #fff;
-  background-color: #3f51b5;
+  background-image: linear-gradient(to top, #ffd600 50%, #005bbc 50%);
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 }
@@ -126,8 +126,8 @@ img {
   max-width: calc(100vw - 48px);
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 16px;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: 50px;
+  margin-bottom: 50px;
   padding: 0;
   list-style: none;
   margin-left: auto;
@@ -180,6 +180,13 @@ img {
 /*
 * Стили компонента Buton (Load more)
 */
+
+.Wrapp_btn {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
 .Button {
   padding: 8px 16px;
   border-radius: 2px;
