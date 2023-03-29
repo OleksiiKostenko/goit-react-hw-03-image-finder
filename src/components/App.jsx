@@ -17,8 +17,7 @@ export class App extends Component {
     isLoadButton: false,
     isShowModal: false,
     largeImage: '',
-    tags:'',
-    
+    tags: '',
   };
 
   handleSearch = searchQuery => {
@@ -53,10 +52,15 @@ export class App extends Component {
               this.setState({ images: data.hits });
             }
             if (data.total > 12) {
-              this.setState(prevState => ({
-                isLoadButton: true,
-                images: [...prevState.images, ...data.hits],
-              }));
+              data.hits.length < 11
+                ? this.setState(prevState => ({
+                    isLoadButton: false,
+                    images: [...prevState.images, ...data.hits],
+                  }))
+                : this.setState(prevState => ({
+                    isLoadButton: true,
+                    images: [...prevState.images, ...data.hits],
+                  }));
             }
           })
           .catch(error => {
@@ -73,16 +77,17 @@ export class App extends Component {
     e.preventDefault();
     this.setState(({ page }) => ({ page: page + 1 }));
   };
-  toggleModal = (image,tags) => {
+  toggleModal = (image, tags) => {
     this.setState(({ isShowModal }) => ({
       isShowModal: !isShowModal,
       largeImage: image,
-      tags: tags
-    }))
-  }
+      tags: tags,
+    }));
+  };
 
   render() {
-    const { images, isLoading, isLoadButton, isShowModal, largeImage, tags } = this.state;
+    const { images, isLoading, isLoadButton, isShowModal, largeImage, tags } =
+      this.state;
     return (
       <>
         <Searchbar onHandleSearch={this.handleSearch} />
@@ -91,8 +96,13 @@ export class App extends Component {
           <ImageGalleryItem toggleModal={this.toggleModal} images={images} />
         </ImageGallery>
         {isLoadButton && <Button onClick={this.handleClickButton} />}
-        {isShowModal && <Modal largeImage={largeImage} tags={tags} toggleModal={this.toggleModal}>
-        </Modal>}
+        {isShowModal && (
+          <Modal
+            largeImage={largeImage}
+            tags={tags}
+            toggleModal={this.toggleModal}
+          ></Modal>
+        )}
       </>
     );
   }
